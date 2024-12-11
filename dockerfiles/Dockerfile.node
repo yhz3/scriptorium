@@ -1,0 +1,3 @@
+FROM node:14
+WORKDIR /code
+CMD ["node", "/code/script.js"]

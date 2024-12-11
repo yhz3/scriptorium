@@ -1,0 +1,179 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  username String @unique
+  firstName   String
+  lastName    String
+  email       String @unique
+  password String // Hashed
+
+  // Optional
+  avatar      String?
+  phoneNumber String?
+  role String @default("USER")
+
+  // Empty upon creation
+  createdAt DateTime @default(now())
+  templates Template[]
+  refreshTokens RefreshToken[]
+  blogs Blog[]
+  comments Comment[]
+  commentVotes CommentVote[]
+  blogVotes BlogVote[]
+  blogReports BlogReport[]
+  commentReports CommentReport[]
+}
+
+model RefreshToken {
+  id Int @id @default(autoincrement())
+  token String @unique
+  userId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Template {
+  id          Int      @id @default(autoincrement())
+  title String
+  @@unique([authorId, title])
+  explanation String
+  code        String
+  language    String // must enforce types C, CPP, JAVA, PYTHON, JAVASCRIPT
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  authorId    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  blogs       Blog[]
+
+  tags        Tag[]
+
+  hidden Boolean @default(false)
+
+  // Fork
+  forkedCopies Template[] @relation("ForkedTemplates")
+  forkedFromId Int?
+  forkedFrom Template? @relation("ForkedTemplates", fields: [forkedFromId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Tag {
+  id          Int @id @default(autoincrement())
+  name        String  @unique
+
+  templates    Template[]
+
+  blogs       Blog[]
+}
+
+model Blog {
+  id Int @id @default(autoincrement())
+  title String
+  description String
+  content String
+  tags Tag[]
+  authorId Int
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  templates Template[]
+  comments Comment[]
+  blogReports BlogReport[]
+  hidden Boolean @default(false)
+
+  rating Float @default(0)
+
+  upvotes BlogVote[]
+}
+
+model Comment {
+  id Int @id @default(autoincrement())
+  content String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  blogId Int
+
+  attachment String?
+
+  // Author
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  authorId Int
+
+  parent Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  parentId Int?
+
+  // Replies
+  replies Comment[] @relation("CommentReplies")
+  votes CommentVote[]
+
+  // Reports
+  reports CommentReport[]
+
+  // Rating
+  rating Float @default(0)// Calculated by upvotes - downvotes. Should be automated in vote registration.
+
+  // Hidden
+  hidden Boolean @default(false)
+}
+
+model BlogVote {
+  upvoteId Int @id @default(autoincrement())
+  upVote Boolean // if false, then downVote
+  blogId Int
+  blogIdConstraint Blog @relation(fields: [blogId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // Author
+  by Int
+  byUser User @relation(fields: [by], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([blogId, by], name: "blog_by_unique")
+}
+
+model CommentVote {
+  upvoteId Int @id @default(autoincrement())
+  upVote Boolean // if false, then downVote
+  commentId Int
+  commentIdConstraint Comment @relation(fields: [commentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // Author
+  by Int
+  byUser User @relation(fields: [by], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([commentId, by], name: "comment_by_unique")
+}
+
+model BlogReport {
+  id Int @id @default(autoincrement())
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  blogId Int
+  description String
+  screenshots String?
+  resolved Boolean @default(false)
+  byUser User @relation(fields: [byUserId], references: [id], onDelete: Cascade, onUpdate: Cascade) 
+  byUserId Int
+}
+
+model CommentReport {
+  id Int @id @default(autoincrement())
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  commentId Int
+  description String
+  screenshots String?
+  resolved Boolean @default(false)
+  byUser User @relation(fields: [byUserId], references: [id], onDelete: Cascade, onUpdate: Cascade) 
+  byUserId Int
+}
+
+datasource db {
+  provider = "sqlite" 
+  url      = env("DATABASE_URL")
+}

@@ -1,0 +1,1247 @@
+{
+	"info": {
+		"_postman_id": "477151e8-73c6-4b24-ac3e-827e35ba2ea8",
+		"name": "CSC309 Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "39442053",
+		"_collection_link": "https://group-9462.postman.co/workspace/1d6dcc9b-fc9d-4287-acd8-a4143e29804a/collection/39442053-477151e8-73c6-4b24-ac3e-827e35ba2ea8?action=share&source=collection_link&creator=39442053"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "basic-user-operation",
+					"item": [
+						{
+							"name": "signup as a user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let response = pm.response.json();",
+											"",
+											"if (response.accessToken) {",
+											"    pm.globals.set(\"accessToken\", \"Bearer \"+ response.accessToken);",
+											"} else {",
+											"    console.log(\"accessToken not found in response.\");",
+											"}",
+											"",
+											"if (response.refreshToken) {",
+											"    pm.globals.set(\"refreshToken\", response.refreshToken);",
+											"} else {",
+											"    console.log(\"refreshToken not found in response.\");",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"alice\",\n    \"password\": \"Abcdefgh!1\",\n    \"firstName\": \"alice\",\n    \"lastName\": \"au\",\n    \"email\": \"alice@test.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3000/api/user/signup",
+								"description": "Allows users to sign up. Users will automatically have the role USER, as there is only one ADMIN user in the system, which is created during setup."
+							},
+							"response": []
+						},
+						{
+							"name": "login as a user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let response = pm.response.json();",
+											"",
+											"if (response.accessToken) {",
+											"    pm.globals.set(\"accessToken\", \"Bearer \"+ response.accessToken);",
+											"} else {",
+											"    console.log(\"accessToken not found in response.\");",
+											"}",
+											"",
+											"if (response.refreshToken) {",
+											"    pm.globals.set(\"refreshToken\", response.refreshToken);",
+											"} else {",
+											"    console.log(\"refreshToken not found in response.\");",
+											"}",
+											"",
+											"if (response.username) {",
+											"    pm.globals.set(\"username\", response.username);",
+											"} else if (response.email) {",
+											"    pm.globals.set(\"email\", response.email);",
+											"} else {",
+											"    console.log(\"username and email not found in response.\");",
+											"}",
+											"",
+											"if (response.password) {",
+											"    pm.globals.set(\"password\", response.password);",
+											"} else {",
+											"    console.log(\"password not found in response.\");",
+											"}",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"alice\",\n    \"password\": \"Abcdefgh!1\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3000/api/user/login",
+								"description": "Logs a user in. Can log in using a `username` or an `email`."
+							},
+							"response": []
+						},
+						{
+							"name": "login as an admin",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3000/api/user/login",
+								"description": "Logs a user in. Can log in using a `username` or an `email`."
+							},
+							"response": []
+						},
+						{
+							"name": "logout as a user",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3000/api/user/logout",
+								"description": "This POST request allows a user to log out by submitting their refresh token. The token ensures that the user’s session is invalidated, enhancing security by preventing unauthorized access post-logout."
+							},
+							"response": []
+						},
+						{
+							"name": "refresh authentication token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let response = pm.response.json();",
+											"",
+											"if (response.accessToken) {",
+											"    pm.globals.set(\"accessToken\", \"Bearer \"+ response.accessToken);",
+											"} else {",
+											"    console.log(\"accessToken not found in response.\");",
+											"}",
+											"",
+											"if (response.refreshToken) {",
+											"    pm.globals.set(\"refreshToken\", response.refreshToken);",
+											"} else {",
+											"    console.log(\"refreshToken not found in response.\");",
+											"}",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3000/api/user/refresh",
+								"description": "Used to exchange a valid refresh token for a new access token, ensuring continued authentication for the user without requiring them to log in again."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "me",
+					"item": [
+						{
+							"name": "get own user info",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3000/api/user/me",
+								"description": "Retrieves details about the currently authenticated user, providing essential profile data or session-related information."
+							},
+							"response": []
+						},
+						{
+							"name": "update own user info",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let response = pm.response.json();",
+											"",
+											"if (response.username) {",
+											"    pm.globals.set(\"username\", response.username);",
+											"} else if (response.email) {",
+											"    pm.globals.set(\"email\", response.email);",
+											"} else {",
+											"    console.log(\"username and email not found in response.\");",
+											"}",
+											"",
+											"if (response.password) {",
+											"    pm.globals.set(\"password\", response.password);",
+											"} else {",
+											"    console.log(\"password not found in response.\");",
+											"}",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstName\": \"eren\",\n    \"lastName\": \"jaeger\",\n    \"email\": \"aot@iseyama.com\",\n    \"password\": \"Abcdefgh!1\",\n    \"newPassword\": \"LeviJeans123!!!!\",\n    \"avatar\": \"image.jpg\",\n    \"phoneNumber\": \"62341231\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3000/api/user/me",
+								"description": "Updates details about the currently authenticated user."
+							},
+							"response": []
+						},
+						{
+							"name": "delete account as a user",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"password\": \"Abcdefgh!1\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3000/api/user/delete",
+								"description": "Deletes the currently authenticated user's account."
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "templates",
+			"item": [
+				{
+					"name": "create a template as a user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"csc309 week 2\",\n    \"explanation\": \"javascript intro\",\n    \"code\": \"console.log(\\\"hi\\\");\",\n    \"language\": \"javascript\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/templates",
+						"description": "Posts template with `id` with the following fields:  \n`title`: the title of the template\n\n`explanation`: a description of the template's contents\n\n`code`: the actual code in the template\n\n`language`: programming language of the code"
+					},
+					"response": []
+				},
+				{
+					"name": "search templates as a visitor/user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/templates?page=1&pageSize=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"templates"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								},
+								{
+									"key": "search",
+									"value": "csc309",
+									"disabled": true
+								},
+								{
+									"key": "authorId",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "language",
+									"value": "javascript",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Retrieves a paginated list of templates based on specified filters and criteria:\n\n`page`: Page number of results.\n\n`pageSize`: Number of items per page.\n\n`search`: Keyword for filtering.\n\n`tags`: Comma-separated tags.\n\n`authorId`: ID of the author.\n\n`language`: Programming language,"
+					},
+					"response": []
+				},
+				{
+					"name": "get single template as user/visitor",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:3000/api/templates/1"
+					},
+					"response": []
+				},
+				{
+					"name": "fork a template as user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"forked template 2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/templates/3/fork",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"templates",
+								"3",
+								"fork"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update a template as user",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"csc309 week 2\",\n    \"explanation\": \"javascript intro\",\n    \"code\": \"console.log(\\\"hi\\\");\",\n    \"tags\": \"simple,educational\",\n    \"language\": \"javascript\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/templates/3",
+						"description": "Updates template with `id` for the following optional fields:  \n`title`: the title of the template\n\n`explanation`: a description of the template's contents\n\n`code`: the actual code in the template\n\n`tags`: the tags associated with the template\n\n`language`: programming language of the code"
+					},
+					"response": []
+				},
+				{
+					"name": "delete template as user",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": "http://localhost:3000/api/templates/2"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "reports",
+			"item": [
+				{
+					"name": "commentReports",
+					"item": [
+						{
+							"name": "get a commentReport as user/admin",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3000/api/reports/commentReports/3",
+								"description": "Gets comment report with `id`. Only visible to author of the comment and admin."
+							},
+							"response": []
+						},
+						{
+							"name": "update a commentReport as admin",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"description\": \"bad comment\",\n    \"screenshots\": \"image.png\",\n    \"resolved\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3000/api/reports/commentReports/3",
+								"description": "Updates comment report with `id` with the following optional fields. Fails if user is does not have role `ADMIN`.\n\n`description`\n\n`screenshots`\n\n`resolved`"
+							},
+							"response": []
+						},
+						{
+							"name": "delete a commentReport as admin.",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3000/api/reports/commentReports/3",
+								"description": "Deletes a comment report with `id`. Will fail if user does not have role `ADMIN`."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "blogReports",
+					"item": [
+						{
+							"name": "get a blogReport",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/reports/blogReports/1?",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"reports",
+										"blogReports",
+										"1"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null
+										}
+									]
+								},
+								"description": "Gets blog report with `id`."
+							},
+							"response": []
+						},
+						{
+							"name": "update a blogReport",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"description\": \"bad comment\",\n    \"screenshots\": \"image.png\",\n    \"resolved\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3000/api/reports/blogReports/1",
+								"description": "Updates blog report with `id` with the following optional fields:  \n`description`\n\n`screenshots`\n\n`resolved`"
+							},
+							"response": []
+						},
+						{
+							"name": "delete a blogReport",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3000/api/reports/blogReports/2",
+								"description": "Deletes a comment report with `id`. Will fail if user is not the author of the report."
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "blogs",
+			"item": [
+				{
+					"name": "votes",
+					"item": [
+						{
+							"name": "register a blog vote",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"upVote\": true,\n    \"blogId\": \"1 \"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3000/api/blogs/votes/",
+								"description": "Adds a vote to blog with `blogId`. Upvotes if `upVote` is `true`, downvotes if `upVote` is `false`."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "report",
+					"item": [
+						{
+							"name": "report a blog",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"blogId\": \"1\",\n    \"description\": \"bad comment\",\n    \"screenshots\": \"image.png\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3000/api/blogs/report",
+								"description": "Reports blog with `blogId` with the following fields:  \n`description`\n\n`screenshots` (optional)"
+							},
+							"response": []
+						},
+						{
+							"name": "search blogReports",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/blogs/report?page=1&pageSize=5&search=bad",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"blogs",
+										"report"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "5"
+										},
+										{
+											"key": "search",
+											"value": "bad"
+										}
+									]
+								},
+								"description": "Retrieves a paginated list of blogReports based on specified filters and criteria:\n\n`page`: Page number of results.\n\n`pageSize`: Number of items per page.\n\n`search`: Keyword for filtering."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "create a blog",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"cool blog about stuff\",\n    \"description\": \"description about stuff\",\n    \"content\": \"yap yap yap\",\n    \"tags\": \"cool, funny, awesome\",\n    \"templateIds\": \"1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/blogs",
+						"description": "Register a blog with the following fields:  \n`title`\n\n`description`\n\n`content`\n\n`tags` (optional)"
+					},
+					"response": []
+				},
+				{
+					"name": "list blogs with filtering",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/blogs?page=1&pageSize=5&search=funny&template=3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"blogs"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "5"
+								},
+								{
+									"key": "search",
+									"value": "funny"
+								},
+								{
+									"key": "tags",
+									"value": "funny",
+									"disabled": true
+								},
+								{
+									"key": "template",
+									"value": "3"
+								}
+							]
+						},
+						"description": "Retrieves a paginated list of blogs based on specified filters and criteria:\n\n`page`: Page number of results.\n\n`pageSize`: Number of items per page.\n\n`search`: Keyword for filtering.\n\n`tags`: Comma-separated tags."
+					},
+					"response": []
+				},
+				{
+					"name": "get a blog",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/blogs/1",
+						"description": "Retrieves information about blog with `id`."
+					},
+					"response": []
+				},
+				{
+					"name": "update a blog",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"blog about lame stuff\",\n    \"content\": \"more yap\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/blogs/1",
+						"description": "Updates blog with `id` with the following optional fields:  \n`title   content`"
+					},
+					"response": []
+				},
+				{
+					"name": "delete a blog",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/blogs/1",
+						"description": "Deletes blog with blog `id`. Fails if user is not the author of the blog."
+					},
+					"response": []
+				},
+				{
+					"name": "hide a blog as admin",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/blogs/hide",
+						"description": "Hides blog with `id`. Will fail if user does not have role `ADMIN`."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "comments",
+			"item": [
+				{
+					"name": "top-level",
+					"item": [
+						{
+							"name": "create top-level comment",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"this post sucks\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:3000/api/blogs/1/comments"
+							},
+							"response": []
+						},
+						{
+							"name": "get all top-level comments on a post",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "replies",
+					"item": [
+						{
+							"name": "create a reply",
+							"request": {
+								"method": "POST",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "retrieve paginated comments as a user/visitor",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/comments/index?page=2&pageSize=5&search=dlore",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"comments",
+										"index"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "2"
+										},
+										{
+											"key": "pageSize",
+											"value": "5"
+										},
+										{
+											"key": "search",
+											"value": "dlore"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "votes",
+					"item": [
+						{
+							"name": "register a comment vote",
+							"request": {
+								"method": "POST",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "get a comment",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/comments/3",
+						"description": "Retrieves information on comment with `id`."
+					},
+					"response": []
+				},
+				{
+					"name": "update a comment",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"cool code\",\n    \"attachment\": \"image.png\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/comments/3",
+						"description": "Updates comment with `id` with the following optional fields:  \n`content`\n\n`attachment`"
+					},
+					"response": []
+				},
+				{
+					"name": "delete a comment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/comments/3",
+						"description": "Deletes comment with `id`. Will fail if user is not the author of the comment."
+					},
+					"response": []
+				},
+				{
+					"name": "hide a comment as admin",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"3\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/comments/hide",
+						"description": "Hides comment with `id`. Fails if user does not have role `ADMIN`."
+					},
+					"response": []
+				},
+				{
+					"name": "report a comment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"commentId\": \"3\",\n    \"description\": \"bad comment\",\n    \"screenshots\": \"image.png\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/comments/report.js",
+						"description": "Posts a report for a comment with `commentId` with the following fields:\n\n`description`\n\n`screenshots` (optional)"
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "execute code",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"language\": \"python\",\n    \"code\": \"print(input())\",\n    \"stdin\": \"Hello World\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/execute",
+				"description": "Executes `code` in `language` with `stdin` as arguments."
+			},
+			"response": []
+		}
+	]
+}
