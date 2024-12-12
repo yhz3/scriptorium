@@ -5,16 +5,22 @@ const prisma = new PrismaClient();
 
 // Creates server's sole admin
 async function main() {
-    await prisma.user.create({
-        data: {
-            username: "admin",
-            password: "admin",
-            firstName: "admin",
-            lastName: "admin",
-            email: "admin",
-            role: "ADMIN"
-        }
-    })
+    const admin = await prisma.user.findUnique({
+        where: { username: "admin" },
+    });
+
+    if (!admin) {
+        await prisma.user.create({
+            data: {
+                username: "admin",
+                password: "admin",
+                firstName: "admin",
+                lastName: "admin",
+                email: "admin",
+                role: "ADMIN"
+            }
+        });
+    }
 }
 
 main()
