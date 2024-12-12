@@ -79,15 +79,6 @@ export function Header({ content }: HeaderProps): JSX.Element {
     setHamburgerMenuOpen(!hamburgerMenuOpen);
   }
 
-  // const changeTheme = () => {
-  //   if (theme === "1e1e1e") {
-  //     setTheme("fff6ec");
-  //   } else {
-  //     setTheme("1e1e1e");
-  //   }
-  //   console.log(`new theme: ${theme}`);
-  // };
-
   const [isHovered, setIsHovered] = useState(false);
   const buttonStyle = {
       color: isHovered ? 'gray' : 'white',
@@ -131,7 +122,7 @@ export function Header({ content }: HeaderProps): JSX.Element {
           console.log(theme);
         }}/>
         <DropDownMenuButton content="Never Give Up" href="https://www.youtube.com/watch?v=KxGRhd_iWuE" />
-        <DropDownMenuButton content="Try Me" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" />
+        <DropDownMenuButton content="Kyrie 2018 Mixtape" href="https://www.youtube.com/watch?v=e4_z3W9W8T8" />
       </div>
       {hamburgerMenuOpen && (
         <div
@@ -242,14 +233,6 @@ export function Templates(): JSX.Element {
   }, []);
 
   const { theme } = useContext(ThemeContext);
-
-  var themeContrast;
-
-  if (theme === '1e1e1e') {
-    themeContrast = 'fff6ec';
-  } else {
-    themeContrast = '161b22';
-  }
 
   return (
     <>
