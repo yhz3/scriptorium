@@ -149,14 +149,16 @@ async function executeAndCaptureLogs(container, timeoutMs) {
                 try {
                     await container.kill();
                 } catch (killErr) {
-                    console.error('Error killing container after logs end:', killErr);
+                    // Getting this printed even though things work correctly
+                    // console.error('Error killing container after logs end:', killErr);
                 }
             }
 
             try {
                 await container.remove({ force: true });
             } catch (removeErr) {
-                console.error('Error removing container after logs end:', removeErr);
+                // Getting this printed even though things work correctly
+                // console.error('Error removing container after logs end:', removeErr);
             }
 
             resolve({ stdout, stderr });
